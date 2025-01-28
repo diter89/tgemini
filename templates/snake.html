@@ -1,0 +1,184 @@
+snake.html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Basic Snake HTML Game</title>
+  <meta charset="UTF-8">
+  <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Menghilangkan scrollbar */
+  }
+
+  body {
+    background: #0e0c16; /* Warna background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Maple Mono', monospace; /* Font */
+  }
+  canvas {
+    border: 2px solid rgba(255, 255, 255, 0.5); /* Border canvas */
+    box-sizing: border-box; /* Memastikan border termasuk dalam ukuran canvas */
+  }
+  .controls {
+    margin-top: 20px;
+  }
+  button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    background-color: #4ADE80; /* Warna tombol */
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Maple Mono', monospace; /* Font */
+  }
+  button:hover {
+    background-color: #3bc46f; /* Efek hover */
+  }
+  </style>
+</head>
+<body>
+<canvas width="400" height="400" id="game"></canvas>
+<div class="controls">
+  <button id="startBtn">Mulai</button>
+</div>
+<script>
+var canvas = document.getElementById('game');
+var context = canvas.getContext('2d');
+
+var grid = 16;
+var count = 0;
+var gameOver = false;
+
+var snake = {
+  x: 160,
+  y: 160,
+  dx: grid,
+  dy: 0,
+  cells: [],
+  maxCells: 4
+};
+var apple = {
+  x: 320,
+  y: 320
+};
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function drawGameOver() {
+  context.fillStyle = 'white';
+  context.font = '30px Arial';
+  context.textAlign = 'center';
+  context.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+}
+
+function resetGame() {
+  snake.x = 160;
+  snake.y = 160;
+  snake.cells = [];
+  snake.maxCells = 4;
+  snake.dx = grid;
+  snake.dy = 0;
+  apple.x = getRandomInt(0, 25) * grid;
+  apple.y = getRandomInt(0, 25) * grid;
+  gameOver = false;
+}
+
+function loop() {
+  if (gameOver) {
+    drawGameOver();
+    return;
+  }
+
+  requestAnimationFrame(loop);
+
+  if (++count < 8) {
+    return;
+  }
+
+  count = 0;
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  snake.x += snake.dx;
+  snake.y += snake.dy;
+
+  // Check for collision with walls
+  if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) {
+    gameOver = true;
+    return;
+  }
+
+  snake.cells.unshift({ x: snake.x, y: snake.y });
+
+  if (snake.cells.length > snake.maxCells) {
+    snake.cells.pop();
+  }
+
+  // Draw the apple as an emoji
+  context.font = '20px Arial'; // Set the font size and family
+  context.fillStyle = 'red'; // Warna teks untuk apel
+  context.textAlign = 'center'; // Pusatkan emoji secara horizontal
+  context.textBaseline = 'middle'; // Pusatkan emoji secara vertikal
+  context.fillText('😭', apple.x + grid / 2, apple.y + grid / 2); // Gambar emoji apel
+
+  // Draw the snake as circles (using "●")
+  context.font = '20px Arial'; // Set the font size and family
+  context.fillStyle = 'green'; // Warna teks untuk ular
+  context.textAlign = 'center'; // Pusatkan emoji secara horizontal
+  context.textBaseline = 'middle'; // Pusatkan emoji secara vertikal
+  snake.cells.forEach(function (cell, index) {
+    context.fillText('😙', cell.x + grid / 2, cell.y + grid / 2); // Gambar emoji ular
+
+    // Check if the snake eats the apple
+    if (cell.x === apple.x && cell.y === apple.y) {
+      snake.maxCells++;
+      apple.x = getRandomInt(0, 25) * grid;
+      apple.y = getRandomInt(0, 25) * grid;
+    }
+
+    // Check for collision with itself
+    for (var i = index + 1; i < snake.cells.length; i++) {
+      if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+        resetGame();
+      }
+    }
+  });
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.which === 37 && snake.dx === 0) { // Arrow left
+    snake.dx = -grid;
+    snake.dy = 0;
+  }
+  else if (e.which === 38 && snake.dy === 0) { // Arrow up
+    snake.dy = -grid;
+    snake.dx = 0;
+  }
+  else if (e.which === 39 && snake.dx === 0) { // Arrow right
+    snake.dx = grid;
+    snake.dy = 0;
+  }
+  else if (e.which === 40 && snake.dy === 0) { // Arrow down
+    snake.dy = grid;
+    snake.dx = 0;
+  }
+});
+
+document.getElementById('startBtn').addEventListener('click', function() {
+  resetGame();
+  requestAnimationFrame(loop);
+});
+
+// Start the game initially
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

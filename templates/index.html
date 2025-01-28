@@ -7,6 +7,38 @@
     <link rel="stylesheet" href="/static/css/styles.css">
     <!-- Highlight.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css">
+    <style>
+        /* Styling untuk floating window */
+        #snake-game-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            background-color: rgba(19, 17, 28, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none; /* Awalnya disembunyikan */
+        }
+        #snake-game-container iframe {
+            border: none;
+            width: 420px; /* Sesuaikan dengan ukuran game */
+            height: 470px; /* Sesuaikan dengan ukuran game */
+        }
+        /* Styling untuk tombol close */
+        #close-snake-game {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -28,7 +60,7 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-content">
             <a href="/load">Load API key</a>
-            <a href="/help">Help</a>
+            <a href="#" id="helpLink">SnakeGame</a> <!-- Tambahkan ID untuk help link -->
         </div>
     </div>
 
@@ -52,5 +84,35 @@
     <!-- Marked.js Script -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="/static/js/scripts.js"></script>
+
+    <script>
+        // Tambahkan event listener untuk membuka game snake sebagai floating window
+        document.getElementById('helpLink').addEventListener('click', function() {
+            let container = document.getElementById('snake-game-container');
+            
+            // Jika container belum ada, buat container baru
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'snake-game-container';
+                container.innerHTML = `
+                    <button id="close-snake-game"></button>
+                    <iframe src="/snake" title="Snake Game"></iframe>
+                `;
+                document.body.appendChild(container);
+
+                // Tambahkan event listener untuk tombol close
+                document.getElementById('close-snake-game').addEventListener('click', function() {
+                    container.style.display = 'none';
+                });
+            }
+
+            // Toggle tampilan container
+            if (container.style.display === 'none' || container.style.display === '') {
+                container.style.display = 'block'; // Tampilkan container
+            } else {
+                container.style.display = 'none'; // Sembunyikan container
+            }
+        });
+    </script>
 </body>
 </html>

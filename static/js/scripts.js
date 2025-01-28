@@ -1,11 +1,9 @@
 // Konfigurasi
-const API_KEY = "AIzaSyAj5ENFqVVa_pGjZS35y8W_aM82JQOa2O8"; // API Key untuk Gemini AI
+const API_KEY = "AIzaSyAj5ENFqvVa_pGjZS35y8W_aM82JQOa2O8"; // API Key untuk Gemini AI
 const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"; // Endpoint API Gemini
 const CONTRACT_ADDRESS = "0x24946e3Ad897eD2d2A451751103fB976B2c7394b"; // kontrak token mewwing
 const DESTINATION_ADDRESS = "0x545E0844FF0680cd70dE36b986fcE7e7C44c6cFb"; // Awokaowk
 const ABI = [
-    // Isi dengan ABI dari smart contract mewwing
-    // Contoh:
     {
         "constant": false,
         "inputs": [
